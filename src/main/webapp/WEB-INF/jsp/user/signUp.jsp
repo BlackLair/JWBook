@@ -16,7 +16,7 @@
 				<h2 class="text-center">Welcome to JWBook!</h2>
 				<div></div>
 			</div>
-			<div class="div-input-row">
+			<div class="div-input-row mt-5">
 				<label class="col-2 text-center">ID</label>
 				<div class="col-8">
 					<input id="idInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="아이디는 영문 또는 숫자 8~16자입니다." class="form-control" type="text" placeholder="아이디를 입력하세요.">
@@ -49,6 +49,14 @@
 				<div></div>
 				<div class="col-8">
 					<button id="signUpBtn" type="button" class="form-control background-mint" disabled="disabled">Sign up</button>
+				</div>
+				<div></div>
+			</div>
+			<div class="div-input-row">
+				<div></div>
+				<div class="col-8 mt-5">
+					<div class="text-small text-white">이미 회원이신가요?</div>
+					<button id="signInBtn" type="button" class="form-control background-white text-dark">Sign in</button>
 				</div>
 				<div></div>
 			</div>
@@ -221,6 +229,11 @@
 							+"error:"+error);
 				}
 			});
+		});
+		
+		// 로그인 화면 이동 버튼
+		$("#signInBtn").on("click", function(){
+			location.href = "/user/signIn-view";
 		});
 	});
 </script>
