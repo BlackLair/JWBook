@@ -121,8 +121,10 @@
 							alert("사용 가능한 아이디입니다.");
 						}
 						isAllValid();
+					}, error:function(request, status, error){
+						alert("code:" + request.status+"\n"+"message:"+request.responseText+"\n"
+								+"error:"+error);
 					}
-					
 				});	
 			}
 		});
@@ -214,6 +216,10 @@
 				, data:{"loginId":loginId, "password":password, "email":email}
 				, success:function(data){
 					alert(data.result);
+				}
+				, error:function(request, status, error){
+					alert("code:" + request.status+"\n"+"message:"+request.responseText+"\n"
+							+"error:"+error);
 				}
 			});
 		});
