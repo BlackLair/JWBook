@@ -5,7 +5,8 @@
   
   <mapper namespace="com.kuwon.jwbook.user.repository.UserRepository">
   	<select id="selectUser"
-  	parameterType="String">
+  	parameterType="string"
+  	resultType="int">
   		SELECT
   			count(*)
   		FROM
