@@ -19,36 +19,36 @@
 			<div class="div-input-row">
 				<label class="col-2 text-center">ID</label>
 				<div class="col-8">
-					<input data-bs-toggle="tooltip" data-bs-placement="bottom" title="아이디는 8~16글자입니다." class="form-control is-invalid" type="text" placeholder="아이디를 입력하세요.">
+					<input id="idInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="아이디는 8~16글자입니다." class="form-control" type="text" placeholder="아이디를 입력하세요.">
 				</div>
-				<button class="btn btn-sm col-2 btn-success" type="button">중복 확인</button>
+				<button id="checkDuplicatedBtn" class="btn btn-sm col-2 btn-success" type="button">중복 확인</button>
 			</div>
 
 			<div class="div-input-row">
 				<label class="col-2 text-center">Password</label>
 				<div class="col-8">
-					<input data-bs-toggle="tooltip" data-bs-placement="bottom" title="비밀번호는 영문/숫자 조합 8~16글자입니다." class="form-control is-invalid" type="password" placeholder="비밀번호를 입력하세요.">
+					<input id="passwordInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="비밀번호는 영문/숫자 조합 8~16글자입니다." class="form-control" type="password" placeholder="비밀번호를 입력하세요.">
 				</div>
 				<div class="col-2"></div>
 			</div>
 			<div class="div-input-row">
 				<label class="col-2 text-center">Confirm<br>Password</label>
 				<div class="col-8">
-					<input class="form-control is-invalid" type="password" placeholder="비밀번호를 확인해주세요.">
+					<input id="confirmPasswordInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="비밀번호를 재입력하세요." class="form-control" type="password" placeholder="비밀번호를 확인해주세요.">
 				</div>
 				<div class="col-2"></div>
 			</div>
 			<div class="div-input-row">
 				<label class="col-2 text-center">Email</label>
 				<div class="col-8">
-					<input class="form-control is-invalid" type="text" placeholder="이메일을 입력하세요.">
+					<input id="emailInput" class="form-control" type="text" placeholder="이메일을 입력하세요.">
 				</div>
 				<div class="col-2"></div>
 			</div>
 			<div class="div-input-row">
 				<div></div>
 				<div class="col-8">
-					<button id="signUpBtn" type="button" class="form-control background-mint">Sign up</button>
+					<button id="signUpBtn" type="button" class="form-control background-mint" disabled="disabled">Sign up</button>
 				</div>
 				<div></div>
 			</div>
@@ -64,6 +64,111 @@
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 		  return new bootstrap.Tooltip(tooltipTriggerEl)
+		});
+		
+		let isValidId = false;      // 각 입력 양식 유효성 여부
+		let isValidPw = false;
+		let isValidConfirm = false;
+		let isValidEmail = false;
+		
+		let passwordFormat = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;  // 8~16자의 영문/숫자 조합 패스워드 정규식
+		let emailFormat = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/; // 이메일 정규식
+		
+		function isAllValid(){
+			if(isValidId && isValidPw && isValidConfirm && isValidEmail){
+				$("#signUpBtn").attr("disabled", false);
+				return true;
+			}
+			$("#signUpBtn").attr("disabled", true);
+			return false;
+		}
+		
+		function toNoneValid(tag){
+			tag.removeClass("is-invalid");
+			tag.removeClass("is-valid");
+		}
+		function toValid(tag){
+			tag.removeClass("is-invalid");
+			tag.addClass("is-valid");
+		}
+		function toInvalid(tag){
+			tag.removeClass("is-valid");
+			tag.addClass("is-invalid");
+		}
+		
+		$("#checkDuplicatedBtn").on("click", function(){
+			// 추후 ajax 추가 예정
+			isValidId = true;
+			toValid($("#idInput"));
+			isAllValid();
+		});
+		
+		$("#emailInput").on("input", function(){
+			let email = $(this).val();
+			if(email == ""){
+				isValidEmail = false;
+				toNoneValid($(this));
+			}
+			else if(!emailFormat.test(email)){
+				isValidEmail = false;
+				toInvalid($(this));
+			}else{
+				isValidEmail = true;
+				toValid($(this));
+			}
+			isAllValid();
+		});
+		
+		$("#confirmPasswordInput").on("input", function(){
+			let password = $("#passwordInput").val();
+			let confirm = $(this).val();
+			if(confirm == ""){
+				isValidConfirm = false;
+				toNoneValid($(this));
+			}else if(password == confirm){
+				isValidConfirm = true;
+				toValid($(this));
+			}else{
+				isValidConfirm = false;
+				toInvalid($(this));
+			}
+			isAllValid();
+		});
+		
+		$("#passwordInput").on("input", function(){
+			let password = $(this).val();
+			let confirm = $("#confirmPasswordInput").val();
+			if(password == ""){
+				isValidPw = false;
+				toNoneValid($(this));
+			}else{
+				if(!passwordFormat.test(password)){
+					isValidPw = false;
+					toInvalid($(this));
+				}else{
+					isValidPw = true;
+					toValid($(this));
+				}
+			}
+			if(confirm != ""){
+				if(confirm == password){
+					isValidConfirm = true;
+					toValid($("#confirmPasswordInput"));
+				}else{
+					isValidConfirm = false;
+					toInvalid($("#confirmPasswordInput"));
+				}
+			}else{
+				isValidConfirm = false;
+				toNoneValid($("#confirmPasswordInput"));
+			}
+			isAllValid();
+		});
+		
+		$("#idInput").on("input", function(){
+			isValidId = false;
+			toNoneValid($(this));
+			isAllValid();
 		});
 		
 		$("#signUpBtn").on("click", function(){
