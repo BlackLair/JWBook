@@ -19,7 +19,7 @@
 			<div class="div-input-row">
 				<label class="col-2 text-center">ID</label>
 				<div class="col-8">
-					<input id="idInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="아이디는 8~16글자입니다." class="form-control" type="text" placeholder="아이디를 입력하세요.">
+					<input id="idInput" data-bs-toggle="tooltip" data-bs-placement="bottom" title="아이디는 영문 또는 숫자 8~16자입니다." class="form-control" type="text" placeholder="아이디를 입력하세요.">
 				</div>
 				<button id="checkDuplicatedBtn" class="btn btn-sm col-2 btn-success" type="button">중복 확인</button>
 			</div>
@@ -205,7 +205,17 @@
 		
 		// 회원가입 버튼
 		$("#signUpBtn").on("click", function(){
-			alert();
+			let loginId = $("#idInput").val();
+			let password = $("#passwordInput").val();
+			let email = $("#emailInput").val();
+			$.ajax({
+				type:"post"
+				, url:"/user/sign-up"
+				, data:{"loginId":loginId, "password":password, "email":email}
+				, success:function(data){
+					alert(data.result);
+				}
+			});
 		});
 	});
 </script>
