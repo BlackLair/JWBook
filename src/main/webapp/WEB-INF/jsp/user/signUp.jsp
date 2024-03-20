@@ -71,10 +71,11 @@
 		let isValidConfirm = false;
 		let isValidEmail = false;
 		
+		let idFormat = /^[a-z0-9]{8,16}$/; // 8~16자의 영문 또는 숫자
 		let passwordFormat = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;  // 8~16자의 영문/숫자 조합 패스워드 정규식
 		let emailFormat = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/; // 이메일 정규식
 		
-		function isAllValid(){
+		function isAllValid(){ // 모든 input의 유효성 확인하여 회원가입 버튼 활성화 여부 설정
 			if(isValidId && isValidPw && isValidConfirm && isValidEmail){
 				$("#signUpBtn").attr("disabled", false);
 				return true;
@@ -83,26 +84,50 @@
 			return false;
 		}
 		
-		function toNoneValid(tag){
+		function toNoneValid(tag){ // input이 공란일 경우
 			tag.removeClass("is-invalid");
 			tag.removeClass("is-valid");
 		}
-		function toValid(tag){
+		function toValid(tag){  // input 값이 유효한 경우
 			tag.removeClass("is-invalid");
 			tag.addClass("is-valid");
 		}
-		function toInvalid(tag){
+		function toInvalid(tag){ // input 값이 유효하지 않은 경우
 			tag.removeClass("is-valid");
 			tag.addClass("is-invalid");
 		}
 		
+		// 아이디 중복 확인 버튼
 		$("#checkDuplicatedBtn").on("click", function(){
-			// 추후 ajax 추가 예정
-			isValidId = true;
-			toValid($("#idInput"));
-			isAllValid();
+			let loginId = $("#idInput").val();
+			if(loginId == "" || !idFormat.test(loginId)){
+				isValidId = false;
+				toInvalid($("#idInput"));
+				alert("올바른 아이디를 입력하세요.");
+				isAllValid();
+			}else{
+				$.ajax({
+					type:"get"
+					, url:"/user/check-duplicated-id"
+					, data:{"loginId":loginId}
+					, success:function(data){
+						if(data.isDuplicated){
+							isValidId = false;
+							toInvalid($("#idInput"));
+							alert("이미 사용중인 아이디입니다.");
+						}else{
+							isValidId = true;
+							toValid($("#idInput"));
+							alert("사용 가능한 아이디입니다.");
+						}
+						isAllValid();
+					}
+					
+				});	
+			}
 		});
 		
+		// 이메일 유효성 확인
 		$("#emailInput").on("input", function(){
 			let email = $(this).val();
 			if(email == ""){
@@ -119,6 +144,7 @@
 			isAllValid();
 		});
 		
+		// 패스워드 확인 유효성 확인
 		$("#confirmPasswordInput").on("input", function(){
 			let password = $("#passwordInput").val();
 			let confirm = $(this).val();
@@ -135,6 +161,7 @@
 			isAllValid();
 		});
 		
+		// 패스워드 유효성 확인
 		$("#passwordInput").on("input", function(){
 			let password = $(this).val();
 			let confirm = $("#confirmPasswordInput").val();
@@ -165,12 +192,18 @@
 			isAllValid();
 		});
 		
+		// 아이디 유효성 확인
 		$("#idInput").on("input", function(){
+			let id = $(this).val();
 			isValidId = false;
 			toNoneValid($(this));
+			if(!idFormat.test(id)){
+				toInvalid($(this));
+			}
 			isAllValid();
 		});
 		
+		// 회원가입 버튼
 		$("#signUpBtn").on("click", function(){
 			alert();
 		});
