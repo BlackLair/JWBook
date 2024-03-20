@@ -61,21 +61,23 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script>
 	$(document).ready(function(){
+		// input 툴팁 스크립트
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 		  return new bootstrap.Tooltip(tooltipTriggerEl)
 		});
 		
-		let isValidId = false;      // 각 입력 양식 유효성 여부
+		let isValidId = false;      // 각 입력값 유효성 여부
 		let isValidPw = false;
 		let isValidConfirm = false;
 		let isValidEmail = false;
 		
-		let idFormat = /^[a-z0-9]{8,16}$/; // 8~16자의 영문 또는 숫자
+		let idFormat = /^[a-z0-9]{8,16}$/; // 8~16자의 영문 또는 숫자 아이디 정규식
 		let passwordFormat = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;  // 8~16자의 영문/숫자 조합 패스워드 정규식
 		let emailFormat = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/; // 이메일 정규식
 		
-		function isAllValid(){ // 모든 input의 유효성 확인하여 회원가입 버튼 활성화 여부 설정
+		// 모든 input의 유효성 확인하여 회원가입 버튼 활성화 여부 설정
+		function checkAllValid(){ 
 			if(isValidId && isValidPw && isValidConfirm && isValidEmail){
 				$("#signUpBtn").attr("disabled", false);
 				return true;
@@ -84,27 +86,28 @@
 			return false;
 		}
 		
-		function toNoneValid(tag){ // input이 공란일 경우
-			tag.removeClass("is-invalid");
-			tag.removeClass("is-valid");
-		}
-		function toValid(tag){  // input 값이 유효한 경우
-			tag.removeClass("is-invalid");
-			tag.addClass("is-valid");
-		}
-		function toInvalid(tag){ // input 값이 유효하지 않은 경우
-			tag.removeClass("is-valid");
-			tag.addClass("is-invalid");
+		// input 태그의 유효성에 따라 디자인 변경
+		function setValid(tag, status){
+			if(status == "valid"){
+				tag.removeClass("is-invalid");
+				tag.addClass("is-valid");
+			}else if(status == "invalid"){
+				tag.removeClass("is-valid");
+				tag.addClass("is-invalid");
+			}else{                         // none : 공란이거나 id의 중복 확인이 되기 전 상태
+				tag.removeClass("is-valid");
+				tag.removeClass("is-invalid");
+			}
+			checkAllValid();
 		}
 		
 		// 아이디 중복 확인 버튼
-		$("#checkDuplicatedBtn").on("click", function(){
+		$("#checkDuplicatedBtn").on("click", function(){ 
 			let loginId = $("#idInput").val();
 			if(loginId == "" || !idFormat.test(loginId)){
 				isValidId = false;
-				toInvalid($("#idInput"));
+				setValid($("#idInput"), "invalid");
 				alert("올바른 아이디를 입력하세요.");
-				isAllValid();
 			}else{
 				$.ajax({
 					type:"get"
@@ -113,11 +116,11 @@
 					, success:function(data){
 						if(data.isDuplicated){
 							isValidId = false;
-							toInvalid($("#idInput"));
+							setValid($("#idInput"), "invalid");
 							alert("이미 사용중인 아이디입니다.");
 						}else{
 							isValidId = true;
-							toValid($("#idInput"));
+							setValid($("#idInput"), "valid");
 							alert("사용 가능한 아이디입니다.");
 						}
 						isAllValid();
@@ -134,16 +137,45 @@
 			let email = $(this).val();
 			if(email == ""){
 				isValidEmail = false;
-				toNoneValid($(this));
+				setValid($(this), "none");
 			}
 			else if(!emailFormat.test(email)){
 				isValidEmail = false;
-				toInvalid($(this));
+				setValid($(this), "invalid");
 			}else{
 				isValidEmail = true;
-				toValid($(this));
+				setValid($(this), "valid");
 			}
-			isAllValid();
+		});
+
+		// 패스워드 유효성 확인
+		$("#passwordInput").on("input", function(){
+			let password = $(this).val();
+			let confirm = $("#confirmPasswordInput").val();
+			if(password == ""){
+				isValidPw = false;
+				setValid($(this), "none");
+			}else{
+				if(!passwordFormat.test(password)){
+					isValidPw = false;
+					setValid($(this), "invalid");
+				}else{
+					isValidPw = true;
+					setValid($(this), "valid");
+				}
+			}
+			if(confirm != ""){
+				if(confirm == password){
+					isValidConfirm = true;
+					setValid($("#confirmPasswordInput"), "valid");
+				}else{
+					isValidConfirm = false;
+					setValid($("#confirmPasswordInput"), "invalid");
+				}
+			}else{
+				isValidConfirm = false;
+				setValid($("#confirmPasswordInput"), "none");
+			}
 		});
 		
 		// 패스워드 확인 유효성 확인
@@ -152,57 +184,24 @@
 			let confirm = $(this).val();
 			if(confirm == ""){
 				isValidConfirm = false;
-				toNoneValid($(this));
+				setValid($(this), "none");
 			}else if(password == confirm){
 				isValidConfirm = true;
-				toValid($(this));
+				setValid($(this), "valid");
 			}else{
 				isValidConfirm = false;
-				toInvalid($(this));
+				setValid($(this), "invalid");
 			}
-			isAllValid();
-		});
-		
-		// 패스워드 유효성 확인
-		$("#passwordInput").on("input", function(){
-			let password = $(this).val();
-			let confirm = $("#confirmPasswordInput").val();
-			if(password == ""){
-				isValidPw = false;
-				toNoneValid($(this));
-			}else{
-				if(!passwordFormat.test(password)){
-					isValidPw = false;
-					toInvalid($(this));
-				}else{
-					isValidPw = true;
-					toValid($(this));
-				}
-			}
-			if(confirm != ""){
-				if(confirm == password){
-					isValidConfirm = true;
-					toValid($("#confirmPasswordInput"));
-				}else{
-					isValidConfirm = false;
-					toInvalid($("#confirmPasswordInput"));
-				}
-			}else{
-				isValidConfirm = false;
-				toNoneValid($("#confirmPasswordInput"));
-			}
-			isAllValid();
 		});
 		
 		// 아이디 유효성 확인
 		$("#idInput").on("input", function(){
 			let id = $(this).val();
 			isValidId = false;
-			toNoneValid($(this));
+			setValid($(this), "none");
 			if(!idFormat.test(id)){
-				toInvalid($(this));
+				setValid($(this), "invalid");
 			}
-			isAllValid();
 		});
 		
 		// 회원가입 버튼
