@@ -56,7 +56,7 @@
 				<div></div>
 				<div class="col-8 mt-5">
 					<div class="text-small text-white">이미 회원이신가요?</div>
-					<button id="signInBtn" type="button" class="form-control background-white text-dark">Sign in</button>
+					<button id="signInBtn" type="button" class="btn w-100 btn-light">Sign in</button>
 				</div>
 				<div></div>
 			</div>

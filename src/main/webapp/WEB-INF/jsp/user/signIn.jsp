@@ -42,7 +42,7 @@
 				<div></div>
 				<div class="col-8">
 					<div class="text-white text-small">아직 계정이 없으신가요?</div>
-					<button id="signUpBtn" type="button" class="form-control background-white text-dark">Sign up</button>
+					<button id="signUpBtn" type="button" class="btn w-100 btn-light">Sign up</button>
 				</div>
 				<div></div>
 			</div>
