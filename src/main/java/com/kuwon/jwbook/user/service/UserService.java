@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.kuwon.jwbook.common.EncryptUtils;
 import com.kuwon.jwbook.common.RegExpUtils;
+import com.kuwon.jwbook.user.domain.User;
 import com.kuwon.jwbook.user.repository.UserRepository;
 
 @Service
@@ -38,4 +39,10 @@ public class UserService {
 			return "unknown error";
 		}
 	}
+	
+	// 로그인
+	public User getUserByLoginIdAndPassword(String loginId, String password) {
+		String encryptPassword = EncryptUtils.sha256(password);
+		return userRepository.selectUserByLoginIdAndPassword(loginId, encryptPassword);
+		}
 }

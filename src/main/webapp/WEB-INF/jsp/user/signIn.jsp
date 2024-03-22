@@ -53,6 +53,37 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<script>
+	$(document).ready(function(){
+		$("#signInBtn").on("click", function(){
+			let id = $("#idInput").val();
+			let password = $("#passwordInput").val();
+			if(id == ""){
+				alert("아이디를 입력하세요.");
+				return;
+			}else if(password == ""){
+				alert("패스워드를 입력하세요.");
+				return;
+			}
+			$.ajax({
+				type:"post"
+				, url:"/user/login"
+				, data:{"loginId":id, "password":password}
+				, success:function(data){
+					if(data.result == "success"){
+						location.href = "/timeline/view";
+					}else{
+						alert("아이디 또는 패스워드가 틀립니다.");
+					}
+				}
+			});
+		});
+		
+		$("#signUpBtn").on("click", function(){
+			location.href = "/user/signUp-view";
+		});
+	});
 
+</script>
 </body>
 </html>
