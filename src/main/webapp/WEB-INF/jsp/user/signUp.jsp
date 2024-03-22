@@ -106,7 +106,6 @@
 				tag.removeClass("is-valid");
 				tag.removeClass("is-invalid");
 			}
-			checkAllValid();
 		}
 		
 		// 아이디 중복 확인 버튼
@@ -222,7 +221,12 @@
 				, url:"/user/sign-up"
 				, data:{"loginId":loginId, "password":password, "email":email}
 				, success:function(data){
-					alert(data.result);
+					if(data.result == "success"){
+						alert("회원가입이 완료되었습니다.");
+						location.href = "/user/signIn-view";
+					}else{
+						alert("회원가입에 실패했습니다.");
+					}
 				}
 				, error:function(request, status, error){
 					alert("code:" + request.status+"\n"+"message:"+request.responseText+"\n"
