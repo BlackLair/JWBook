@@ -11,12 +11,18 @@ section{
 	height:800px;
 }
 
-section > .div-input-row{
-	margin-top:20px;
+.div-input-row{
 	display:flex;
+	flex-direction:row;
+	margin-top:20px;
 	justify-content:space-between;
 	align-items:center;
 	width:500px;
+}
+
+.contents{
+	width:600px;
+	height:600px;
 }
 
 .background-mint{
