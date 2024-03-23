@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.kuwon.jwbook.timeline.repository.TimelineRepository">
+  	<select id="selectPostList"
+  	resultType="com.kuwon.jwbook.timeline.domain.Post">
+  		SELECT
+  			post.id
+  			, post.userId
+  			, post.contents
+  			, post.imagePath
+  			, post.createdAt
+  			, post.updatedAt
+  			, user.loginId AS userIdStr
+  		FROM
+  			`post`
+  		JOIN
+  			`user` ON user.id = post.userId
+  		ORDER BY
+  			post.id DESC
+  		LIMIT 5;
+  	</select>
+  	<select id="selectPost" parameterType="int"
+  	resultType="com.kuwon.jwbook.timeline.domain.Post">
+  		SELECT
+  			`id`
+  			, `userId`
+  			, `contents`
+  			, `imagePath`
+  			, `createdAt`
+  			, `updatedAt`
+  		FROM
+  			`post`
+  		WHERE
+  			`id` = #{id};
+  		
+  	
+  	</select>
+  	
+  	<delete id="deletePost" parameterType="int">
+  		DELETE FROM
+  			`post`
+  		WHERE
+  			`id` = #{id};
+  	</delete>
+  	<select id="selectPostLikeCount"
+  	parameterType="int"
+  	resultType="int">
+  		SELECT
+  			count(*)
+  		FROM
+  			`like`
+  		WHERE
+  			`postId` = #{postId};
+  	</select>
+  </mapper>
