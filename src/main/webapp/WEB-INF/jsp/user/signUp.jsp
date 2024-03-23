@@ -106,6 +106,7 @@
 				tag.removeClass("is-valid");
 				tag.removeClass("is-invalid");
 			}
+			checkAllValid();
 		}
 		
 		// 아이디 중복 확인 버튼
