@@ -48,16 +48,16 @@
 				$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
 					let postId = $(this).attr("value");
 					if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
-						let currentIcon = $(this);
 						$.ajax({
 							type:"get"
 							, url:"/timeline/like"
 							, data:{"postId":postId}
+							, context:this
 							, success:function(data){
 								if(data.result == "success"){ // 좋아요 성공
 									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
-									currentIcon.removeClass("bi-hand-thumbs-up");
-									currentIcon.addClass("bi-hand-thumbs-up-fill");
+									$(this).removeClass("bi-hand-thumbs-up");
+									$(this).addClass("bi-hand-thumbs-up-fill");
 								}else if(data.result == "not exist"){ // 존재하지 않는 게시물
 									alert("존재하지 않는 게시물입니다.");
 									$("div[name=" + postId + "]").remove();
@@ -68,16 +68,16 @@
 							}
 						});
 					}else{  // 좋아요 취소하기
-						let currentIcon = $(this);
 						$.ajax({
 							type:"delete"
 							, url:"/timeline/unlike"
 							, data:{"postId":postId}
+							, context:this
 							, success:function(data){
 								if(data.result == "success"){
 									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
-									currentIcon.removeClass("bi-hand-thumbs-up-fill");
-									currentIcon.addClass("bi-hand-thumbs-up");
+									$(this).removeClass("bi-hand-thumbs-up-fill");
+									$(this).addClass("bi-hand-thumbs-up");
 								}
 							}
 						});
