@@ -38,8 +38,47 @@
 			type:"get"
 			, url:"/timeline/post"
 			, success:function(data){
-				$("#contentsDiv").html(data); 
-				$(".btn-delete").on("click", function(){
+				$("#contentsDiv").html(data);
+				$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
+					let postId = $(this).attr("value");
+					if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
+						let currentIcon = $(this);
+						$.ajax({
+							type:"get"
+							, url:"/timeline/like"
+							, data:{"postId":postId}
+							, success:function(data){
+								if(data.result == "success"){ // 좋아요 성공
+									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
+									currentIcon.removeClass("bi-hand-thumbs-up");
+									currentIcon.addClass("bi-hand-thumbs-up-fill");
+								}else if(data.result == "not exist"){ // 존재하지 않는 게시물
+									alert("존재하지 않는 게시물입니다.");
+									$("div[name=" + postId + "]").remove();
+								}
+							}
+							, error:function(){
+								alert("좋아요 에러");
+							}
+						});
+					}else{  // 좋아요 취소하기
+						let currentIcon = $(this);
+						$.ajax({
+							type:"delete"
+							, url:"/timeline/unlike"
+							, data:{"postId":postId}
+							, success:function(data){
+								if(data.result == "success"){
+									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
+									currentIcon.removeClass("bi-hand-thumbs-up-fill");
+									currentIcon.addClass("bi-hand-thumbs-up");
+								}
+							}
+						});
+					}
+				});
+				
+				$(".btn-delete").on("click", function(){ // 게시글 삭제 버튼
 					let postId = $(this).val();
 					$.ajax({
 						type:"delete"

@@ -21,9 +21,16 @@
 							<fmt:formatDate value="${post.createdAt }" pattern="yyyy년 M월 d일 HH:mm:ss" />
 						</div>
 						<img class="mt-2" width="100%" src="${post.imagePath }">
-						<div class="div-like w-100 d-flex align-items-center mt-2">
-							<i id="likeBtn" class="bi bi-hand-thumbs-up-fill"></i>
-							<div class="ml-4">${post.likeCount }</div>
+						<div class="w-100 d-flex align-items-center mt-2">
+							<c:choose>
+								<c:when test="${post.isLiked }">
+								<i value="${post.id }" class="btn-like bi bi-hand-thumbs-up-fill" ></i>
+								</c:when>
+								<c:otherwise>
+								<i value="${post.id }" class="btn-like bi bi-hand-thumbs-up"></i>
+								</c:otherwise>
+							</c:choose>
+							<div value="${post.id }" class="div-likeCount ml-4">${post.likeCount }</div>
 						</div>
 						<div class="div-reply mt-2">
 							

@@ -49,6 +49,7 @@ public class Post {
 	
 	private String userIdStr;
 	private int likeCount;
+	private boolean isLiked;
 
 	public String getUserIdStr() {
 		return userIdStr;
@@ -61,6 +62,12 @@ public class Post {
 	}
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
+	}
+	public boolean getIsLiked() {
+		return isLiked;
+	}
+	public void setIsLiked(boolean isLiked) {
+		this.isLiked = isLiked;
 	}
 	
 }

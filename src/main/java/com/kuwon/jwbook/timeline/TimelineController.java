@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.kuwon.jwbook.timeline.domain.Post;
 import com.kuwon.jwbook.timeline.service.TimelineService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RequestMapping("/timeline")
 @Controller
 public class TimelineController {
@@ -25,8 +27,8 @@ public class TimelineController {
 	
 	// 타임라인 페이지 내 게시글 불러오기
 	@GetMapping("/post")
-	public String postView(Model model) {
-		List<Post> postList = timelineService.getPostList();
+	public String postView(Model model, HttpSession session) {
+		List<Post> postList = timelineService.getPostList((Integer)session.getAttribute("userId"));
 		model.addAttribute("postList", postList);
 		return "timeline/post";
 	}
