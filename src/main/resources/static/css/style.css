@@ -25,6 +25,18 @@ section{
 	height:600px;
 }
 
+#uploadDiv{
+	width:600px;
+}
+
+#contentsTextarea{
+	width:600px;
+	height:80px;
+	resize:none;
+	border:none;
+}
+
+
 .background-mint{
 	border:none;
 	background-color: #58fcf8;

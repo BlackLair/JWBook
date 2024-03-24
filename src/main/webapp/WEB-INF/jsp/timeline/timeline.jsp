@@ -15,8 +15,6 @@
 			<div class="col-3"></div>
 			<div id="contentsDiv" style="overflow-y:scroll; width:600px; height:600px" class="contents bg-info">
 				
-				
-				
 			</div>
 			<aside class="col-3 d-flex flex-column p-3 align-items-center">
 				<div class="text-center"><h2>JWBook!</h2></div>
@@ -24,6 +22,14 @@
 				<button type="button" class="form-control btn-info mt-4">좋아요한 글만 보기</button>
 				<button onclick="location.href='/user/logout'" type="button" class="form-control btn-danger mt-4">로그아웃</button>
 			</aside>
+		</div>
+		<div class="mt-3 bg-warning d-flex">
+			<div class="col-3"></div>
+			<div id="uploadDiv">
+				<div class="h4">새 게시글 작성</div>
+				<input type="file" class="form-control">
+				<textarea id="contentsTextarea" type="text" class="form-control mt-3" placeholder="내용을 입력해주세요."></textarea>
+			</div>
 		</div>
 	</div>
 
