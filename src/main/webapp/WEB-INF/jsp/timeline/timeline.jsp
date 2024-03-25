@@ -23,12 +23,17 @@
 				<button onclick="location.href='/user/logout'" type="button" class="form-control btn-danger mt-4">로그아웃</button>
 			</aside>
 		</div>
-		<div class="mt-3 bg-warning d-flex">
+		<div class="mt-3 d-flex">
 			<div class="col-3"></div>
 			<div id="uploadDiv">
-				<div class="h4">새 게시글 작성</div>
+				<div class="h5">게시글 작성</div>
 				<input type="file" class="form-control">
-				<textarea id="contentsTextarea" type="text" class="form-control mt-3" placeholder="내용을 입력해주세요."></textarea>
+				<div class="d-flex w-100 mt-3">
+					<textarea id="contentsTextarea" type="text" class="form-control" placeholder="내용을 입력해주세요."></textarea>
+					<button type="button" class="btn btn-info col-2">
+						<i class="bi bi-send-fill h2"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
