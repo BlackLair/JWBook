@@ -19,8 +19,7 @@
   		JOIN
   			`user` ON user.id = post.userId
   		ORDER BY
-  			post.id DESC
-  		LIMIT 5;
+  			post.id DESC;
   	</select>
   	<select id="selectPost" parameterType="int"
   	resultType="com.kuwon.jwbook.timeline.domain.Post">
@@ -35,9 +34,22 @@
   			`post`
   		WHERE
   			`id` = #{id};
-  		
-  	
   	</select>
+  	<insert id="insertPost" parameterType="map">
+  		INSERT INTO
+  			`post`
+  		(
+  			`userId`
+  			, `contents`
+  			, `imagePath`
+  		)
+  		VALUE
+  		(
+  			#{userId}
+  			, #{contents}
+  			, #{imagePath}
+  		);
+  	</insert>
   	
   	<delete id="deletePost" parameterType="int">
   		DELETE FROM

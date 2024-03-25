@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.kuwon.jwbook.common.FileManager;
 import com.kuwon.jwbook.timeline.domain.Post;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
 
@@ -40,6 +42,13 @@ public class TimelineService {
 		}
 		return "not exist";
 	}
+	
+	// 게시글 업로드
+	public int addPost(int userId, String contents, MultipartFile file) {
+		String imagePath = FileManager.saveFile(userId, file);
+		return timelineRepository.insertPost(userId, contents, imagePath);
+	}
+	
 	
 	// 게시물에 좋아요 남기기
 	public Map<String, Object> addLike(int userId, int postId) {

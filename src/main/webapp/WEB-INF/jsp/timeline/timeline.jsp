@@ -27,10 +27,10 @@
 			<div class="col-3"></div>
 			<div id="uploadDiv">
 				<div class="h5">게시글 작성</div>
-				<input type="file" class="form-control">
+				<input id="fileInput" type="file" accept="image/*" class="form-control">
 				<div class="d-flex w-100 mt-3">
 					<textarea id="contentsTextarea" type="text" class="form-control" placeholder="내용을 입력해주세요."></textarea>
-					<button type="button" class="btn btn-info col-2">
+					<button id="uploadBtn" type="button" class="btn btn-info col-2">
 						<i class="bi bi-send-fill h2"></i>
 					</button>
 				</div>
@@ -45,71 +45,109 @@
 
 	$(document).ready(function(){
 		//$("#contentsDiv").scrollTop(9999);
-		$.ajax({
-			type:"get"
-			, url:"/timeline/post"
-			, success:function(data){
-				$("#contentsDiv").html(data);
-				$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
-					let postId = $(this).attr("value");
-					if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
-						$.ajax({
-							type:"get"
-							, url:"/timeline/like"
-							, data:{"postId":postId}
-							, context:this
-							, success:function(data){
-								if(data.result == "success"){ // 좋아요 성공
-									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
-									$(this).removeClass("bi-hand-thumbs-up");
-									$(this).addClass("bi-hand-thumbs-up-fill");
-								}else if(data.result == "not exist"){ // 존재하지 않는 게시물
-									alert("존재하지 않는 게시물입니다.");
-									$("div[name=" + postId + "]").remove();
-								}
+		function setPostUIEvent(){ // 게시글 목록 view의 각 UI들에 이벤트를 등록한다.
+			$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
+				let postId = $(this).attr("value");
+				if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
+					$.ajax({
+						type:"get"
+						, url:"/timeline/like"
+						, data:{"postId":postId}
+						, context:this
+						, success:function(data){
+							if(data.result == "success"){ // 좋아요 성공
+								$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
+								$(this).removeClass("bi-hand-thumbs-up");
+								$(this).addClass("bi-hand-thumbs-up-fill");
+							}else if(data.result == "not exist"){ // 존재하지 않는 게시물
+								alert("존재하지 않는 게시물입니다.");
+								$("div[name=" + postId + "]").remove();
 							}
-							, error:function(){
-								alert("좋아요 에러");
-							}
-						});
-					}else{  // 좋아요 취소하기
-						$.ajax({
-							type:"delete"
-							, url:"/timeline/unlike"
-							, data:{"postId":postId}
-							, context:this
-							, success:function(data){
-								if(data.result == "success"){
-									$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
-									$(this).removeClass("bi-hand-thumbs-up-fill");
-									$(this).addClass("bi-hand-thumbs-up");
-								}
-							}
-						});
-					}
-				});
-				
-				$(".btn-delete").on("click", function(){ // 게시글 삭제 버튼
-					let postId = $(this).val();
+						}
+						, error:function(){
+							alert("좋아요 에러");
+						}
+					});
+				}else{  // 좋아요 취소하기
 					$.ajax({
 						type:"delete"
-						, url:"/timeline/delete"
+						, url:"/timeline/unlike"
 						, data:{"postId":postId}
+						, context:this
 						, success:function(data){
 							if(data.result == "success"){
-								alert("삭제되었습니다.");
-								$("div[name=" + postId +"]").remove();
-							}else if(data.result == "permission denied"){
-								alert("삭제 권한이 없습니다.");
-							}else if(data.result == "not exist"){
-								alert("존재하지 않는 글입니다.");
-								$("div[name=" + postId +"]").remove();
+								$(".div-likeCount[value=" + postId + "]").text(data.likeCount);
+								$(this).removeClass("bi-hand-thumbs-up-fill");
+								$(this).addClass("bi-hand-thumbs-up");
 							}
 						}
 					});
+				}
+			});
+			
+			$(".btn-delete").on("click", function(){ // 게시글 삭제 버튼
+				let postId = $(this).val();
+				$.ajax({
+					type:"delete"
+					, url:"/timeline/delete"
+					, data:{"postId":postId}
+					, success:function(data){
+						if(data.result == "success"){
+							alert("삭제되었습니다.");
+							$("div[name=" + postId +"]").remove();
+						}else if(data.result == "permission denied"){
+							alert("삭제 권한이 없습니다.");
+						}else if(data.result == "not exist"){
+							alert("존재하지 않는 글입니다.");
+							$("div[name=" + postId +"]").remove();
+						}
+					}
 				});
+			});
+		}
+		function loadPost(){ // 게시글 목록을 불러온다.
+			$.ajax({
+				type:"get"
+				, url:"/timeline/post"
+				, success:function(data){
+					$("#contentsDiv").html(data);
+					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
+				}
+			});
+		}
+		$("#uploadBtn").on("click", function(){ // 게시물 업로드
+			let file = $("#fileInput")[0].files[0];
+			let contents = $("#contentsTextarea").val();
+			if(contents == ""){ // 내용이 없는 경우
+				alert("내용을 입력해주세요.");
+				return;
 			}
+			let formData = new FormData();
+			formData.append("contents", contents);
+			formData.append("imageFile", file);
+			$.ajax({
+				type:"post"
+				, url:"/timeline/upload"
+				, data:formData
+				, enctype:"multipart/form-data"
+				, processData:false
+				, contentType:false
+				, success:function(data){
+					if(data.result == "success"){
+						loadPost();
+						$("#contentsDiv").scrollTop(0);
+						$("#fileInput").val("");
+						$("#contentsTextarea").val("");
+					}else{
+						alert("업로드에 실패했습니다.");
+					}
+				}
+				, error:function(){
+					alert("에러 발생");
+				}
+			});
 		});
+		loadPost();
 		
 	});
 </script>
