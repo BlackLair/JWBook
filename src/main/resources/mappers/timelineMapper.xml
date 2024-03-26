@@ -103,4 +103,20 @@
   			`postId` = #{postId}
   		AND `userId` = #{userId};
   	</delete>
+  	
+  	<select id="selectReplyList" parameterType="int"
+  	resultType="com.kuwon.jwbook.timeline.domain.Reply">
+  		SELECT
+  			`id`
+  			, `postId`
+  			, `userId`
+  			, `contents`
+  			, `createdAt`
+  			, `updatedAt`
+  		FROM
+  			`reply`
+  		WHERE
+  			`postId` = #{postId};
+  		
+  	</select>
   </mapper>
