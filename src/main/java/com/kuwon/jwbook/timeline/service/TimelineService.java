@@ -13,6 +13,7 @@ import com.kuwon.jwbook.common.FileManager;
 import com.kuwon.jwbook.timeline.domain.Post;
 import com.kuwon.jwbook.timeline.domain.Reply;
 import com.kuwon.jwbook.timeline.domain.ReplyDTO;
+import com.kuwon.jwbook.timeline.dto.PostDetail;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
 import com.kuwon.jwbook.user.repository.UserRepository;
 
@@ -24,13 +25,24 @@ public class TimelineService {
 	UserRepository userRepository;
 	
 	// 타임라인 게시글 불러오기
-	public List<Post> getPostList(int userId){
+	public List<PostDetail> getPostList(int userId){
 		List<Post> postList = timelineRepository.selectPostList();
-		for(Post post : postList) {
-			post.setLikeCount(timelineRepository.selectPostLikeCount(post.getId()));
-			post.setIsLiked(timelineRepository.selectLike(userId, post.getId()) == 1 );
+		List<PostDetail> postDetailList = new ArrayList<>();
+		for(Post post : postList) { // Entity 클래스의 정보들 중 필요한 정보를 DTO 클래스에 담기
+			
+			PostDetail postDetail = new PostDetail();
+			postDetail.setId(post.getId());
+			postDetail.setContents(post.getContents());
+			postDetail.setImagePath(post.getImagePath());
+			postDetail.setUserId(post.getUserId());
+			postDetail.setCreatedAt(post.getCreatedAt());
+			
+			postDetail.setLikeCount(timelineRepository.selectPostLikeCount(post.getId()));
+			postDetail.setIsLiked(timelineRepository.selectLike(userId, post.getId()) == 1);
+			postDetail.setUserIdStr(userRepository.selectLoginIdById(post.getUserId()));
+			postDetailList.add(postDetail);
 		}
-		return postList;
+		return postDetailList;
 	}
 	
 	// 게시글 삭제
