@@ -105,6 +105,19 @@
 				});
 			});
 		}
+		
+		function loadReply(postId){
+			$.ajax({
+				type:"get"
+				, url:"/timeline/reply"
+				, data:{"postId":postId}
+				, success:function(data){
+					$(".div-reply[value=" + postId + "]").html(data);
+					// UI 등록 기능 구현하기
+				}
+			});
+		}
+		
 		function loadPost(){ // 게시글 목록을 불러온다.
 			$.ajax({
 				type:"get"
@@ -112,6 +125,10 @@
 				, success:function(data){
 					$("#contentsDiv").html(data);
 					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
+					$(".post").each(function(index, item){
+						let postId = $(this).attr("name");
+						loadReply(postId);
+					});
 				}
 			});
 		}

@@ -46,4 +46,15 @@
   			`loginId` = #{loginId}
   		AND `password` = #{password};
   	</select>
+  	
+  	<select id="selectLoginIdById"
+  	parameterType="int"
+  	resultType="string">
+  		SELECT
+  			`loginId`
+  		FROM
+  			`user`
+  		WHERE
+  			`id` = #{id};
+  	</select>
   </mapper>

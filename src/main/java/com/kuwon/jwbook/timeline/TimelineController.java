@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kuwon.jwbook.timeline.domain.Post;
+import com.kuwon.jwbook.timeline.domain.ReplyDTO;
 import com.kuwon.jwbook.timeline.service.TimelineService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,5 +33,12 @@ public class TimelineController {
 		List<Post> postList = timelineService.getPostList((Integer)session.getAttribute("userId"));
 		model.addAttribute("postList", postList);
 		return "timeline/post";
+	}
+	
+	@GetMapping("/reply")
+	public String replyView(@RequestParam("postId") int postId, Model model, HttpSession session) {
+		List<ReplyDTO> replyDTOList = timelineService.getReplyList(postId);
+		model.addAttribute("replyDTOList", replyDTOList);
+		return "timeline/reply";
 	}
 }

@@ -32,35 +32,8 @@
 							</c:choose>
 							<div value="${post.id }" class="div-likeCount ml-4">${post.likeCount }</div>
 						</div>
-						<div class="div-reply mt-2 w-100">
-							<div class="w-100 bg-secondary text-white p-2">
-								<div>댓글 1</div>
-								<hr class="m-1">
-								<div class="singleReply-div w-100 d-flex justify-content-between">
-									<div style="font-size:13px"><span class="text-dark fw-bold">@mytestaccount</span> : 이 댓글은 2001년 영국에서 시작되어 세계 곳곳으로 퍼져나간 어쩌구저쩌구로 복붙하여 3곳 이상에 입력하지 않으면 맨발로 레고를 밟을 것이다.</div>
-									<button type="button" class="btn btn-sm btn-danger" style="height:30px;" >
-										<i class="bi bi-trash-fill text-white"></i>
-									</button>
-								</div>
-								<hr class="m-1">
-								<div class="singleReply-div w-100 d-flex justify-content-between align-items-center">
-									<div style="font-size:13px"><span class="text-dark fw-bold">@mytestaccount</span> : 이 댓글은 2001년 영.</div>
-									<button type="button" class="btn btn-sm btn-danger" style="height:30px;" >
-										<i class="bi bi-trash-fill text-white"></i>
-									</button>
-								</div>
-								<hr class="m-1">
-								<div class="w-100">
-									<form class="d-flex w-100">
-										<input type="text" class="form-control border-info bg-dark text-white">
-										<button type="button" class="btn btn-info col-1">
-											<i class="bi bi-reply-fill"></i>
-										</button>
-									</form>
-								</div>
-								
-							</div>
-							
+						<div value="${post.id }" class="div-reply mt-2 w-100">
+							<%-- 댓글 내용 동적으로 추가 --%>
 						</div>
 					</div>
 				</div>

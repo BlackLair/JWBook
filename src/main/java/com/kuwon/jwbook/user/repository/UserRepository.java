@@ -16,4 +16,5 @@ public interface UserRepository {
 	// 일치하는 아이디/패스워드 존재 확인
 	public User selectUserByLoginIdAndPassword(@Param("loginId") String loginId
 											, @Param("password") String password);
+	public String selectLoginIdById(@Param("id") int id);
 }

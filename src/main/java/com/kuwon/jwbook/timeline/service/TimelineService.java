@@ -1,5 +1,6 @@
 package com.kuwon.jwbook.timeline.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kuwon.jwbook.common.FileManager;
 import com.kuwon.jwbook.timeline.domain.Post;
+import com.kuwon.jwbook.timeline.domain.Reply;
+import com.kuwon.jwbook.timeline.domain.ReplyDTO;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
+import com.kuwon.jwbook.user.repository.UserRepository;
 
 @Service
 public class TimelineService {
 	@Autowired
 	TimelineRepository timelineRepository;
+	@Autowired
+	UserRepository userRepository;
 	
 	// 타임라인 게시글 불러오기
 	public List<Post> getPostList(int userId){
@@ -71,5 +77,16 @@ public class TimelineService {
 		resultMap.put("result", "success");
 		resultMap.put("likeCount", timelineRepository.selectPostLikeCount(postId));
 		return resultMap;
+	}
+	
+	public List<ReplyDTO> getReplyList(int postId){
+		List<Reply> replyList = timelineRepository.selectReplyList(postId);
+		List<ReplyDTO> replyDTOList = new ArrayList<ReplyDTO>();
+		for(Reply reply : replyList) {
+			String userIdStr = userRepository.selectLoginIdById(reply.getUserId());
+			replyDTOList.add(new ReplyDTO(reply, userIdStr));
+		}
+		return replyDTOList;
+		
 	}
 }
