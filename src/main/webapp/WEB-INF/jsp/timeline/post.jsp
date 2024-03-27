@@ -13,7 +13,7 @@
 							</div>
 							<div class="w-25 d-flex align-items-center justify-content-center">
 								<c:if test="${post.userId eq userId }">
-								<button type="button" value="${post.id }" class="btn btn-delete btn-danger">Delete</button>
+								<button type="button" value="${post.id }" class="btn btn-deletePost btn-danger">Delete</button>
 								</c:if>
 							</div>
 						</div>

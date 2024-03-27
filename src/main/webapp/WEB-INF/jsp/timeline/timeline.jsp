@@ -85,7 +85,7 @@
 				}
 			});
 			
-			$(".btn-delete").on("click", function(){ // 게시글 삭제 버튼
+			$(".btn-deletePost").on("click", function(){ // 게시글 삭제 버튼
 				let postId = $(this).val();
 				$.ajax({
 					type:"delete"
@@ -93,7 +93,7 @@
 					, data:{"postId":postId}
 					, success:function(data){
 						if(data.result == "success"){
-							alert("삭제되었습니다.");
+							alert("게시글이 삭제되었습니다.");
 							$("div[name=" + postId +"]").remove();
 						}else if(data.result == "permission denied"){
 							alert("삭제 권한이 없습니다.");
