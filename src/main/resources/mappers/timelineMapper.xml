@@ -8,18 +8,15 @@
   	resultType="com.kuwon.jwbook.timeline.domain.Post">
   		SELECT
   			post.id
-  			, post.userId
-  			, post.contents
-  			, post.imagePath
-  			, post.createdAt
-  			, post.updatedAt
-  			, user.loginId AS userIdStr
+  			, `userId`
+  			, `contents`
+  			, `imagePath`
+  			, `createdAt`
+  			, `updatedAt`
   		FROM
   			`post`
-  		JOIN
-  			`user` ON user.id = post.userId
   		ORDER BY
-  			post.id DESC;
+  			`id` DESC;
   	</select>
   	<select id="selectPost" parameterType="int"
   	resultType="com.kuwon.jwbook.timeline.domain.Post">
@@ -117,6 +114,50 @@
   			`reply`
   		WHERE
   			`postId` = #{postId};
-  		
+  	</select>
+  	
+  	<insert id="insertReply" parameterType="map">
+  		INSERT INTO
+  			`reply`
+  		(
+  			`userId`
+  			, `postId`
+  			, `contents`
+  		)
+  		VALUE
+  		(
+  			#{userId}
+  			, #{postId}
+  			, #{contents}
+  		);
+  	</insert>
+  	
+  	<select id="selectReplyById" parameterType="int"
+  	resultType="com.kuwon.jwbook.timeline.domain.Reply">
+  		SELECT
+  			`id`
+  			, `postId`
+  			, `userId`
+  			, `contents`
+  			, `createdAt`
+  			, `updatedAt`
+  			FROM
+  				`reply`
+  			WHERE
+  				`id` = #{id};
+  	</select>
+  	
+  	<delete id="deleteReplyById" parameterType="int">
+  		DELETE FROM
+  			`reply`
+  		WHERE
+  			`id` = #{id};
+  	</delete>
+  	
+  	<select id="deleteReplyAll" parameterType="int">
+  		DELETE FROM
+  			`reply`
+  		WHERE
+  			`postId` = #{postId};
   	</select>
   </mapper>

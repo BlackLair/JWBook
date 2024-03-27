@@ -105,15 +105,64 @@
 				});
 			});
 		}
-		
+		function setReplyUIEvent(postId){
+			$(".form-addReply[value=" + postId + "]").on("submit", function(e){
+				e.preventDefault();
+				let contents = $(".input-reply[name=" + postId + "]").val();
+				if(contents == ""){
+					alert("댓글 내용을 입력하세요.");
+					return;
+				}
+				$.ajax({
+					type:"post"
+					, url:"/timeline/reply"
+					, data:{"postId":postId, "contents":contents}
+					, success:function(data){
+						if(data.result == "success"){
+							loadReply(postId);
+						}else{
+							alert("댓글 작성 실패");
+						}
+					}
+					, error:function(){
+						alert("댓글 작성 에러");
+					}
+				});
+			});
+			$(".btn-deleteReply[value=" + postId + "]").on("click", function(){
+				let replyId = $(this).attr("id");
+				$.ajax({
+					type:"delete"
+					, url:"/timeline/reply-delete"
+					, data:{"id":replyId}
+					, success:function(data){
+						if(data.result == "success"){
+							alert("댓글이 삭제되었습니다.");
+						}else if(data.result == "permission denied"){
+							alert("댓글 삭제 권한이 없습니다.");
+						}else if(data.result == "not exist"){
+							alert("댓글이 존재하지 않습니다.");
+						}else{
+							alert("댓글 삭제 실패");
+						}
+						loadReply(postId);
+					}
+					, error:function(){
+						alert("댓글 삭제 에러");
+					}
+				});
+			});
+		}
 		function loadReply(postId){
 			$.ajax({
 				type:"get"
-				, url:"/timeline/reply"
+				, url:"/timeline/reply-view"
 				, data:{"postId":postId}
 				, success:function(data){
 					$(".div-reply[value=" + postId + "]").html(data);
-					// UI 등록 기능 구현하기
+				}
+				, complete:function(){
+					setReplyUIEvent(postId);
 				}
 			});
 		}

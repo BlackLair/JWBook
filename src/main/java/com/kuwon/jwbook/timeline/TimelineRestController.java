@@ -59,9 +59,38 @@ public class TimelineRestController {
 		return timelineService.addLike(userId, postId);
 	}
 	
+	// 게시글 좋아요 취소
 	@DeleteMapping("/unlike")
 	public Map<String, Object> removeLike(@RequestParam("postId") int postId, HttpSession session){
 		int userId = (Integer)session.getAttribute("userId");
 		return timelineService.removeLike(userId, postId);
 	}
+	
+	
+	// 댓글 업로드
+	@PostMapping("/reply")
+	public Map<String, String> addReply(@RequestParam("postId") int postId
+									, @RequestParam("contents") String contents
+									, HttpSession session){
+		int userId = (Integer)session.getAttribute("userId");
+		Map<String, String> resultMap = new HashMap<>();
+		if(timelineService.addReply(userId, postId, contents) == 1) {
+			resultMap.put("result", "success");
+		}else {
+			resultMap.put("result", "failure");
+		}
+		return resultMap;
+	}
+	
+	// 댓글 삭제
+	@DeleteMapping("reply-delete")
+	public Map<String, String> removeReply(@RequestParam("id") int id
+										, HttpSession session){
+		int userId = (Integer)session.getAttribute("userId");
+		String result = timelineService.removeReply(id, userId);
+		Map<String, String> resultMap = new HashMap<>();
+		resultMap.put("result", result);
+		return resultMap;
+	}
+	
 }

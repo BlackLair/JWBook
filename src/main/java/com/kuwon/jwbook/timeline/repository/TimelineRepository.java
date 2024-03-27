@@ -22,4 +22,8 @@ public interface TimelineRepository {
 	public int deleteLike(@Param("userId") int userId, @Param("postId") int postId);
 	
 	public List<Reply> selectReplyList(@Param("postId") int postId);
+	public int insertReply(@Param("userId") int userId, @Param("postId") int postId, @Param("contents") String contents);
+	public Reply selectReplyById(@Param("id") int id);
+	public int deleteReplyById(@Param("id") int id);
+	public int deleteReplyAll(@Param("postId") int postId);
 }

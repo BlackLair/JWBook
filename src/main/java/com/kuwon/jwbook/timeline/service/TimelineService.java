@@ -8,12 +8,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 import com.kuwon.jwbook.common.FileManager;
 import com.kuwon.jwbook.timeline.domain.Post;
 import com.kuwon.jwbook.timeline.domain.Reply;
-import com.kuwon.jwbook.timeline.domain.ReplyDTO;
 import com.kuwon.jwbook.timeline.dto.PostDetail;
+import com.kuwon.jwbook.timeline.dto.ReplyDetail;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
 import com.kuwon.jwbook.user.repository.UserRepository;
 
@@ -56,6 +57,7 @@ public class TimelineService {
 		}
 		if(timelineRepository.deletePost(postId) == 1) {
 			timelineRepository.deleteLikeAll(postId); // 삭제된 게시글의 모든 좋아요 삭제
+			timelineRepository.deleteReplyAll(postId);
 			return "success";
 		}
 		return "not exist";
@@ -91,14 +93,41 @@ public class TimelineService {
 		return resultMap;
 	}
 	
-	public List<ReplyDTO> getReplyList(int postId){
+	// 게시글의 댓글 목록 가져오기
+	public List<ReplyDetail> getReplyList(int postId){
 		List<Reply> replyList = timelineRepository.selectReplyList(postId);
-		List<ReplyDTO> replyDTOList = new ArrayList<ReplyDTO>();
+		List<ReplyDetail> replyDetailList = new ArrayList<ReplyDetail>();
 		for(Reply reply : replyList) {
-			String userIdStr = userRepository.selectLoginIdById(reply.getUserId());
-			replyDTOList.add(new ReplyDTO(reply, userIdStr));
+			ReplyDetail replyDetail = new ReplyDetail();
+			replyDetail.setUserId(reply.getUserId());
+			replyDetail.setUserIdStr(userRepository.selectLoginIdById(reply.getUserId()));
+			replyDetail.setContents(reply.getContents());
+			replyDetail.setPostId(postId);
+			replyDetail.setId(reply.getId());
+			replyDetailList.add(replyDetail);
 		}
-		return replyDTOList;
-		
+		return replyDetailList;
+	}
+	
+	// 댓글 업로드하기
+	public int addReply(int userId, int postId, String contents) {
+		if(timelineRepository.selectPost(postId) != null) {
+			return timelineRepository.insertReply(userId, postId, contents);
+		}
+		return 0;
+	}
+	
+	public String removeReply(int id, int userId) {
+		Reply reply = timelineRepository.selectReplyById(id);
+		if(reply == null) {
+			return "not exist";
+		}
+		if(reply.getUserId() != userId) {
+			return "permission denied";
+		}
+		if(timelineRepository.deleteReplyById(id) == 1) {
+			return "success";
+		}
+		return "failure";
 	}
 }
