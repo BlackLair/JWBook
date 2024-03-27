@@ -27,7 +27,7 @@ public class ReplyRestController {
 									, HttpSession session){
 		int userId = (Integer)session.getAttribute("userId");
 		Map<String, String> resultMap = new HashMap<>();
-		if(replyService.addReply(userId, postId, contents) == 1) {
+		if(replyService.addReply(userId, postId, contents) != null) {
 			resultMap.put("result", "success");
 		}else {
 			resultMap.put("result", "failure");

@@ -40,8 +40,8 @@ public class TimelineService {
 			postDetail.setImagePath(post.getImagePath());
 			postDetail.setUserId(post.getUserId());
 			postDetail.setCreatedAt(post.getCreatedAt());
-			postDetail.setLikeCount(likeRepository.selectPostLikeCount(post.getId()));
-			postDetail.setIsLiked(likeRepository.selectLike(userId, post.getId()) == 1);
+			postDetail.setLikeCount(likeJpaRepository.countByPostId(post.getId()));
+			postDetail.setIsLiked(likeJpaRepository.countByUserIdAndPostId(userId, post.getId()) == 1);
 			postDetail.setUserIdStr(userRepository.selectLoginIdById(post.getUserId()));
 			postDetailList.add(postDetail);
 		}
@@ -49,6 +49,7 @@ public class TimelineService {
 	}
 	
 	// 게시글 삭제
+	@Transactional
 	public String removePost(int userId, int postId) {
 		Post post = timelineRepository.selectPost(postId);
 		if(post == null) { // 이미 존재하지 않는 게시글인 경우
@@ -58,8 +59,8 @@ public class TimelineService {
 			return "permission denied";
 		}
 		if(timelineRepository.deletePost(postId) == 1) {
-			likeRepository.deleteLikeAll(postId); // 삭제된 게시글의 모든 좋아요 삭제
-			replyRepository.deleteReplyAll(postId);
+			likeJpaRepository.deleteByPostId(postId); // 삭제된 게시글의 모든 좋아요 삭제
+			replyJpaRepository.deleteByPostId(postId);
 			return "success";
 		}
 		return "not exist";

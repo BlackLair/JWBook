@@ -9,7 +9,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.kuwon.jwbook.reply.domain.Reply;
 import com.kuwon.jwbook.reply.dto.ReplyDetail;
-import com.kuwon.jwbook.reply.repository.ReplyRepository;
+import com.kuwon.jwbook.reply.repository.ReplyJpaRepository;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
 import com.kuwon.jwbook.user.repository.UserRepository;
 
@@ -19,14 +19,14 @@ public class ReplyService {
 	TimelineRepository timelineRepository;
 	
 	@Autowired
-	ReplyRepository replyRepository;
+	ReplyJpaRepository replyJpaRepository;
 	
 	@Autowired
 	UserRepository userRepository;
 	
 	// 게시글의 댓글 목록 가져오기
 	public List<ReplyDetail> getReplyList(int postId){
-		List<Reply> replyList = replyRepository.selectReplyList(postId);
+		List<Reply> replyList = replyJpaRepository.findByPostId(postId);
 		List<ReplyDetail> replyDetailList = new ArrayList<ReplyDetail>();
 		for(Reply reply : replyList) {
 			ReplyDetail replyDetail = new ReplyDetail();
@@ -42,24 +42,26 @@ public class ReplyService {
 	}
 	
 	// 댓글 업로드하기
-	public int addReply(int userId, int postId, String contents) {
+	public Reply addReply(int userId, int postId, String contents) {
 		if(timelineRepository.selectPost(postId) != null) {
-			return replyRepository.insertReply(userId, postId, contents);
+			Reply reply = Reply.builder()
+					.userId(userId)
+					.postId(postId)
+					.contents(contents).build();
+			return reply = replyJpaRepository.save(reply);
 		}
-		return 0;
+		return null;
 	}
 	// 댓글 삭제하기
 	public String removeReply(int id, int userId) {
-		Reply reply = replyRepository.selectReplyById(id);
+		Reply reply = replyJpaRepository.findById(id).orElse(null);
 		if(reply == null) {
 			return "not exist";
 		}
 		if(reply.getUserId() != userId) {
 			return "permission denied";
 		}
-		if(replyRepository.deleteReplyById(id) == 1) {
-			return "success";
-		}
-		return "failure";
+		replyJpaRepository.deleteById(id);
+		return "success";
 	}
 }

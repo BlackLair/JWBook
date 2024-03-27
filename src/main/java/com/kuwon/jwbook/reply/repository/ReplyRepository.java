@@ -1,3 +1,4 @@
+/*
 package com.kuwon.jwbook.reply.repository;
 
 import java.util.List;
@@ -15,3 +16,4 @@ public interface ReplyRepository {
 	public int deleteReplyById(@Param("id") int id);
 	public int deleteReplyAll(@Param("postId") int postId);
 }
+*/

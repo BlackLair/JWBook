@@ -1,7 +1,12 @@
+/*
+
 package com.kuwon.jwbook.like.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.kuwon.jwbook.like.domain.Like;
 
 @Mapper
 public interface LikeRepository {
@@ -11,3 +16,5 @@ public interface LikeRepository {
 	public int deleteLike(@Param("userId") int userId, @Param("postId") int postId);
 	public int selectPostLikeCount(@Param("postId") int postId);
 }
+
+*/
