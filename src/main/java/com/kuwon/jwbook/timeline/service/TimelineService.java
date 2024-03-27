@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 import com.kuwon.jwbook.common.FileManager;
 import com.kuwon.jwbook.like.repository.LikeRepository;
@@ -34,11 +35,11 @@ public class TimelineService {
 			
 			PostDetail postDetail = new PostDetail();
 			postDetail.setId(post.getId());
-			postDetail.setContents(post.getContents());
+			String htmlContents = HtmlUtils.htmlEscape(post.getContents()); // html injection 방지
+			postDetail.setContents(htmlContents);
 			postDetail.setImagePath(post.getImagePath());
 			postDetail.setUserId(post.getUserId());
 			postDetail.setCreatedAt(post.getCreatedAt());
-			
 			postDetail.setLikeCount(likeRepository.selectPostLikeCount(post.getId()));
 			postDetail.setIsLiked(likeRepository.selectLike(userId, post.getId()) == 1);
 			postDetail.setUserIdStr(userRepository.selectLoginIdById(post.getUserId()));

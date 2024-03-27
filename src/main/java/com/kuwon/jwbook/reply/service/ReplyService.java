@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.kuwon.jwbook.reply.domain.Reply;
 import com.kuwon.jwbook.reply.dto.ReplyDetail;
@@ -31,7 +32,8 @@ public class ReplyService {
 			ReplyDetail replyDetail = new ReplyDetail();
 			replyDetail.setUserId(reply.getUserId());
 			replyDetail.setUserIdStr(userRepository.selectLoginIdById(reply.getUserId()));
-			replyDetail.setContents(reply.getContents());
+			String htmlContents = HtmlUtils.htmlEscape(reply.getContents()); // html injection 방지
+			replyDetail.setContents(htmlContents);
 			replyDetail.setPostId(postId);
 			replyDetail.setId(reply.getId());
 			replyDetailList.add(replyDetail);
