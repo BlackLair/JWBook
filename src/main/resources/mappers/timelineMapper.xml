@@ -6,6 +6,7 @@
   <mapper namespace="com.kuwon.jwbook.timeline.repository.TimelineRepository">
   	<select id="selectPostList"
   	resultType="com.kuwon.jwbook.timeline.domain.Post">
+  	<![CDATA[
   		SELECT
   			post.id
   			, `userId`
@@ -15,8 +16,12 @@
   			, `updatedAt`
   		FROM
   			`post`
+  		WHERE
+  			`id` < #{postId}
   		ORDER BY
-  			`id` DESC;
+  			`id` DESC
+  		LIMIT 5;
+  	]]>
   	</select>
   	<select id="selectPost" parameterType="int"
   	resultType="com.kuwon.jwbook.timeline.domain.Post">

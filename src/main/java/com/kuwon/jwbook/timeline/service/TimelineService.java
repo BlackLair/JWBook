@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
 import com.kuwon.jwbook.common.FileManager;
-import com.kuwon.jwbook.like.repository.LikeRepository;
-import com.kuwon.jwbook.reply.repository.ReplyRepository;
+import com.kuwon.jwbook.like.repository.LikeJpaRepository;
+import com.kuwon.jwbook.reply.repository.ReplyJpaRepository;
 import com.kuwon.jwbook.timeline.domain.Post;
 import com.kuwon.jwbook.timeline.dto.PostDetail;
 import com.kuwon.jwbook.timeline.repository.TimelineRepository;
@@ -23,13 +24,13 @@ public class TimelineService {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
-	ReplyRepository replyRepository;
+	ReplyJpaRepository replyJpaRepository;
 	@Autowired
-	LikeRepository likeRepository;
+	LikeJpaRepository likeJpaRepository;
 	
 	// 타임라인 게시글 불러오기
-	public List<PostDetail> getPostList(int userId){
-		List<Post> postList = timelineRepository.selectPostList();
+	public List<PostDetail> getPostList(int userId, int postId){
+		List<Post> postList = timelineRepository.selectPostList(postId);
 		List<PostDetail> postDetailList = new ArrayList<>();
 		for(Post post : postList) { // Entity 클래스의 정보들 중 필요한 정보를 DTO 클래스에 담기
 			

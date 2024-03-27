@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-	<div id="wrap" class="bg-success">
+	<div id="wrap" class="bg-secondary">
 		<div class="d-flex">
 			<div class="col-3"></div>
 			<div id="contentsDiv" style="overflow-y:scroll; width:600px; height:600px" class="contents bg-info">
@@ -42,10 +42,18 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script>
-
+	let lastLoadedPostId = 2100000000;
 	$(document).ready(function(){
-		//$("#contentsDiv").scrollTop(9999);
+		$("#contentsDiv").scroll(function(){
+			let scrollPos = $(this).scrollTop();
+			let scrollHeight = $(this).prop("scrollHeight");
+			let clientHeight = $(this).prop("clientHeight");
+			if(scrollPos == scrollHeight - clientHeight){
+				loadPost();
+			}
+		});
 		function setPostUIEvent(){ // 게시글 목록 view의 각 UI들에 이벤트를 등록한다.
+			$(".btn-like").off("click"); // 스크롤 내려서 게시물 로드 시 이벤트 중복 등록 방지
 			$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
 				let postId = $(this).attr("value");
 				if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
@@ -84,7 +92,7 @@
 					});
 				}
 			});
-			
+			$(".btn-deletePost").off("click"); // 스크롤 내려서 게시물 로드 시 이벤트 중복 등록 방지
 			$(".btn-deletePost").on("click", function(){ // 게시글 삭제 버튼
 				let postId = $(this).val();
 				$.ajax({
@@ -94,12 +102,21 @@
 					, success:function(data){
 						if(data.result == "success"){
 							alert("게시글이 삭제되었습니다.");
-							$("div[name=" + postId +"]").remove();
+							$("div[name=" + postId +"]").hide(0, function(){
+								$("div[name=" + postId + "]").remove();
+							});
 						}else if(data.result == "permission denied"){
 							alert("삭제 권한이 없습니다.");
 						}else if(data.result == "not exist"){
 							alert("존재하지 않는 글입니다.");
 							$("div[name=" + postId +"]").remove();
+						}
+					}
+					, complete:function(){
+						let scrollHeight = $("#contentsDiv").prop("scrollHeight");
+						let clientHeight = $("#contentsDiv").prop("clientHeight");
+						if(scrollHeight == clientHeight){
+							loadPost(lastLoadedPostId);
 						}
 					}
 				});
@@ -171,12 +188,14 @@
 			$.ajax({
 				type:"get"
 				, url:"/timeline/post"
+				, data:{"postId":lastLoadedPostId}
 				, success:function(data){
-					$("#contentsDiv").html(data);
+					$("#contentsDiv").append(data);
 					
 					$(".post").each(function(index, item){
 						let postId = $(this).attr("name");
 						loadReply(postId);
+						lastLoadedPostId = postId;
 					});
 				}
 				, complete:function(){
@@ -203,6 +222,8 @@
 				, contentType:false
 				, success:function(data){
 					if(data.result == "success"){
+						$("#contentsDiv").html("");
+						lastLoadedPostId = 2100000000;
 						loadPost();
 						$("#contentsDiv").scrollTop(0);
 						$("#fileInput").val("");
@@ -216,7 +237,7 @@
 				}
 			});
 		});
-		loadPost();
+		loadPost(2100000000);
 		
 	});
 </script>
