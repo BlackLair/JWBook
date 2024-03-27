@@ -124,11 +124,14 @@
 				, url:"/timeline/post"
 				, success:function(data){
 					$("#contentsDiv").html(data);
-					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
+					
 					$(".post").each(function(index, item){
 						let postId = $(this).attr("name");
 						loadReply(postId);
 					});
+				}
+				, complete:function(){
+					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
 				}
 			});
 		}
