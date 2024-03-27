@@ -1,4 +1,4 @@
-package com.kuwon.jwbook.timeline.domain;
+package com.kuwon.jwbook.reply.domain;
 
 import java.util.Date;
 

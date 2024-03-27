@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kuwon.jwbook.timeline.dto.PostDetail;
-import com.kuwon.jwbook.timeline.dto.ReplyDetail;
 import com.kuwon.jwbook.timeline.service.TimelineService;
 
 import jakarta.servlet.http.HttpSession;
@@ -33,14 +31,5 @@ public class TimelineController {
 		List<PostDetail> postList = timelineService.getPostList((Integer)session.getAttribute("userId"));
 		model.addAttribute("postList", postList);
 		return "timeline/post";
-	}
-	
-	// 단일 게시글에 대한 댓글 불러오기
-	@GetMapping("/reply-view")
-	public String replyView(@RequestParam("postId") int postId, Model model, HttpSession session) {
-		List<ReplyDetail> replyDetailList = timelineService.getReplyList(postId);
-		model.addAttribute("replyDetailList", replyDetailList);
-		model.addAttribute("postId", postId);
-		return "timeline/reply";
 	}
 }

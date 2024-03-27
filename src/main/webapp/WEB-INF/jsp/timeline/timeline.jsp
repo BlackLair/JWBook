@@ -51,7 +51,7 @@
 				if($(this).hasClass("bi-hand-thumbs-up")){ // 좋아요하기
 					$.ajax({
 						type:"get"
-						, url:"/timeline/like"
+						, url:"/like/add"
 						, data:{"postId":postId}
 						, context:this
 						, success:function(data){
@@ -71,7 +71,7 @@
 				}else{  // 좋아요 취소하기
 					$.ajax({
 						type:"delete"
-						, url:"/timeline/unlike"
+						, url:"/like/remove"
 						, data:{"postId":postId}
 						, context:this
 						, success:function(data){
@@ -115,7 +115,7 @@
 				}
 				$.ajax({
 					type:"post"
-					, url:"/timeline/reply"
+					, url:"/reply/upload"
 					, data:{"postId":postId, "contents":contents}
 					, success:function(data){
 						if(data.result == "success"){
@@ -133,7 +133,7 @@
 				let replyId = $(this).attr("id");
 				$.ajax({
 					type:"delete"
-					, url:"/timeline/reply-delete"
+					, url:"/reply/remove"
 					, data:{"id":replyId}
 					, success:function(data){
 						if(data.result == "success"){
@@ -156,7 +156,7 @@
 		function loadReply(postId){
 			$.ajax({
 				type:"get"
-				, url:"/timeline/reply-view"
+				, url:"/reply/view"
 				, data:{"postId":postId}
 				, success:function(data){
 					$(".div-reply[value=" + postId + "]").html(data);

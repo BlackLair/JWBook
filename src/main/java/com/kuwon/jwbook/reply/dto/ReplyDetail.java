@@ -1,4 +1,4 @@
-package com.kuwon.jwbook.timeline.dto;
+package com.kuwon.jwbook.reply.dto;
 
 public class ReplyDetail {
 	private int id;
