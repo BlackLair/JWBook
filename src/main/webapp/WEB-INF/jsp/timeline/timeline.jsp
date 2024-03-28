@@ -42,7 +42,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script>
-	let lastLoadedPostId = 2100000000;
+	let lastLoadedPostId = 2100000000; // 가장 최근 로딩된 게시물들 중 가장 마지막 게시글 아이디
+	let prevLastLoadedPostId = lastLoadedPostId; // 가장 최근 로딩 직전 게시물들 중 가장 오래된 게시글 아이디
 	$(document).ready(function(){
 		$("#contentsDiv").scroll(function(){
 			let scrollPos = $(this).scrollTop();
@@ -194,11 +195,14 @@
 					
 					$(".post").each(function(index, item){
 						let postId = $(this).attr("name");
-						loadReply(postId);
+						if(postId < prevLastLoadedPostId){
+							loadReply(postId);	
+						}
 						lastLoadedPostId = postId;
 					});
 				}
 				, complete:function(){
+					prevLastLoadedPostId = lastLoadedPostId;
 					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
 				}
 			});
