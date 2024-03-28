@@ -45,14 +45,21 @@
 	let lastLoadedPostId = 2100000000; // 가장 최근 로딩된 게시물들 중 가장 마지막 게시글 아이디
 	let prevLastLoadedPostId = lastLoadedPostId; // 가장 최근 로딩 직전 게시물들 중 가장 오래된 게시글 아이디
 	$(document).ready(function(){
-		$("#contentsDiv").scroll(function(){
-			let scrollPos = $(this).scrollTop();
-			let scrollHeight = $(this).prop("scrollHeight");
-			let clientHeight = $(this).prop("clientHeight");
-			if(scrollPos == scrollHeight - clientHeight){
-				loadPost();
+		function setScrollEvent(value){
+			if(value){
+				$("#contentsDiv").scroll(function(){
+					let scrollPos = $(this).scrollTop();
+					let scrollHeight = $(this).prop("scrollHeight");
+					let clientHeight = $(this).prop("clientHeight");
+					if(scrollPos == scrollHeight - clientHeight){
+						loadPost();
+					}
+				});	
 			}
-		});
+			else{
+				$("#contentsDiv").off("scroll");
+			}
+		}
 		function setPostUIEvent(){ // 게시글 목록 view의 각 UI들에 이벤트를 등록한다.
 			$(".btn-like").off("click"); // 스크롤 내려서 게시물 로드 시 이벤트 중복 등록 방지
 			$(".btn-like").on("click", function(){ // 좋아요 버튼 누름
@@ -186,13 +193,13 @@
 		}
 		
 		function loadPost(){ // 게시글 목록을 불러온다.
+			setScrollEvent(false);
 			$.ajax({
 				type:"get"
 				, url:"/timeline/post"
 				, data:{"postId":lastLoadedPostId}
 				, success:function(data){
 					$("#contentsDiv").append(data);
-					
 					$(".post").each(function(index, item){
 						let postId = $(this).attr("name");
 						if(postId < prevLastLoadedPostId){
@@ -204,6 +211,7 @@
 				, complete:function(){
 					prevLastLoadedPostId = lastLoadedPostId;
 					setPostUIEvent(); // 각 게시글의 UI에 이벤트 등록
+					setScrollEvent(true);
 				}
 			});
 		}
@@ -228,6 +236,7 @@
 					if(data.result == "success"){
 						$("#contentsDiv").html("");
 						lastLoadedPostId = 2100000000;
+						prevLastLoadedPostId = lastLoadedPostId;
 						loadPost();
 						$("#contentsDiv").scrollTop(0);
 						$("#fileInput").val("");
